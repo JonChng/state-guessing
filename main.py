@@ -14,6 +14,7 @@ turtle.shape(image)
 
 game_is_on = True
 guesses = []
+guessed_right = []
 count = 0
 
 while game_is_on:
@@ -21,6 +22,13 @@ while game_is_on:
 
     guess = capwords(answer_state)
     states = df["state"].to_list()
+
+    if guess == "Exit":
+        game_is_on = False
+        final = list(set(states) - set(guessed_right))
+        df1 = pd.DataFrame(final)
+        df1.to_csv("states_to_learn.csv")
+
 
     if guess in guesses:
         print("You have already guessed this.")
@@ -33,6 +41,7 @@ while game_is_on:
         x = df[df["state"] == guess]['x'].values[0]
         y = df[df["state"] == guess]['y'].values[0]
         count += 1
+        guessed_right.append(guess)
         state = State(x, y, guess)
 
     if count == 50:
